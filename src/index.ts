@@ -103,11 +103,6 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 // Also serve other static files from the parent directory
 app.use(express.static(path.join(__dirname, '..')));
 
-// Specifically serve the root index.html file
-app.get('/', (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
-});
-
 // Endpoint to download TikTok video
 app.post('/download', async (req: Request, res: Response) => {
     try {
