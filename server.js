@@ -4,11 +4,14 @@ const cheerio = require('cheerio');
 const cors = require('cors');
 const path = require('path');
 
+// For Vercel compatibility
+const isVercel = !!process.env.VERCEL;
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security: Define allowed origins
-const ALLOWED_ORIGINS = [
+// Security: Define allowed origins (including Vercel deployment URL)
+const BASE_ALLOWED_ORIGINS = [
     'http://localhost:' + PORT,
     'http://127.0.0.1:' + PORT,
     'http://localhost:3000', // Default port
@@ -16,6 +19,13 @@ const ALLOWED_ORIGINS = [
     'http://localhost:' + PORT.toString(),
     'http://127.0.0.1:' + PORT.toString()
 ];
+
+// Add Vercel deployment URL if available
+if (process.env.VERCEL_URL) {
+    BASE_ALLOWED_ORIGINS.push(`https://${process.env.VERCEL_URL}`);
+}
+
+const ALLOWED_ORIGINS = BASE_ALLOWED_ORIGINS;
 
 // Custom middleware to check origin
 const checkOrigin = (req, res, next) => {

@@ -1,6 +1,8 @@
 // Configuration
 const CONFIG = {
-    API_ENDPOINT: '/download'
+    API_ENDPOINT: typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+        ? '/api/download'  // Use API route for Vercel deployment
+        : '/download'      // Use direct route for local development
 };
 
 async function downloadTikTokVideo(url) {
