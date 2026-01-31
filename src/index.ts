@@ -97,8 +97,17 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from the root directory
+// Serve static files from the dist directory (where compiled files are located)
+// __dirname refers to the directory of the compiled file (dist/), so we serve from there
+app.use(express.static(path.join(__dirname)));
+
+// Also serve static files from the parent directory for other assets like index.html
 app.use(express.static(path.join(__dirname, '..')));
+
+// Specifically serve the root index.html file
+app.get('/', (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
 
 // Endpoint to download TikTok video
 app.post('/download', async (req: Request, res: Response) => {
@@ -238,11 +247,6 @@ app.post('/download', async (req: Request, res: Response) => {
             return; // Explicitly return to satisfy TypeScript
         }
     }
-});
-
-// Serve the homepage
-app.get('/', (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
 // API endpoint for downloading TikTok videos - keep the original POST endpoint
