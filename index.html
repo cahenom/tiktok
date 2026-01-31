@@ -1,0 +1,388 @@
+<!doctype html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>TikTok Video Downloader Home</title>
+    <!-- Local Tailwind CSS -->
+    <link href="dist/output.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&amp;family=Noto+Sans:wght@400;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white transition-colors duration-200"
+  >
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+      <!-- TopNavBar -->
+      <header
+        class="fixed top-0 left-0 right-0 z-50 w-full border-b border-solid border-[#f0f2f4] dark:border-[#2a343f] bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-4 lg:px-40 py-3"
+      >
+        <div
+          class="mx-auto flex max-w-[1200px] items-center justify-between whitespace-nowrap"
+        >
+          <div class="flex items-center gap-4 text-primary">
+            <div class="size-8">
+              <svg
+                fill="currentColor"
+                viewbox="0 0 48 48"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
+                ></path>
+              </svg>
+            </div>
+            <h2
+              class="text-[#111418] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em] font-display"
+            >
+              TikTokDownloader
+            </h2>
+          </div>
+          <div class="hidden md:flex flex-1 justify-end gap-8">
+            <nav class="flex items-center gap-9">
+              <a
+                class="text-[#111418] dark:text-gray-300 text-sm font-medium hover:text-primary transition-colors"
+                href="#"
+                >How to use</a
+              >
+              <a
+                class="text-[#111418] dark:text-gray-300 text-sm font-medium hover:text-primary transition-colors"
+                href="#"
+                >FAQ</a
+              >
+              <a
+                class="text-[#111418] dark:text-gray-300 text-sm font-medium hover:text-primary transition-colors"
+                href="#"
+                >Contact</a
+              >
+            </nav>
+            <button
+              class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-full bg-primary h-10 px-5 text-white text-sm font-bold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all"
+            >
+              Get Started
+            </button>
+          </div>
+          <!-- Mobile Menu Icon (Placeholder) -->
+          <div class="flex items-center space-x-4">
+            <button id="dark-mode-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+              <span id="dark-mode-icon" class="material-symbols-outlined text-[#111418] dark:text-white">dark_mode</span>
+            </button>
+            <div class="md:hidden">
+              <span
+                class="material-symbols-outlined text-[#111418] dark:text-white"
+                >menu</span
+              >
+            </div>
+          </div>
+        </div>
+      </header>
+      <main class="flex-1 mt-20"> <!-- Added margin-top to account for fixed header -->
+        <!-- HeroSection -->
+        <section
+          class="relative px-4 py-12 lg:px-40 lg:py-20 flex justify-center bg-white dark:bg-background-dark"
+        >
+          <div class="max-w-[960px] w-full">
+            <div class="@container">
+              <div
+                class="flex min-h-[520px] flex-col gap-8 bg-cover bg-center bg-no-repeat rounded-xl items-center justify-center p-6 lg:p-12 relative overflow-hidden"
+                data-alt="Abstract dynamic blue gradient with fluid shapes"
+                style="
+                  background-image:
+                    linear-gradient(
+                      135deg,
+                      rgba(19, 127, 236, 0.9) 0%,
+                      rgba(16, 25, 34, 0.8) 100%
+                    ),
+                    url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuA2fVEtoI3N4KBFbYV-_ARg21J-W6qOr1pjHupm8CX4Faq_Gx0THqrYEPT9k3a5Q5lqlqHgwO_cH8ZcvWW9szNOryrzdcw3ojpLc59Eorm-meMDEbjYapGghMgt6V0FDc_OzUjB9xAEHWe5ChI0qNf5Thr0P89gVfhGCZTPV5IjFL1emuUHTlpVk3iSCk3TUx5FkSw1sEci9m7CXP7ymHEC9Xcmf8dXwpd6OlV0EpU2A0dZwNzQ7SZpjMcDJiCmSJAgQeSarkSSDP2z&quot;);
+                "
+              >
+                <div class="flex flex-col gap-4 text-center z-10">
+                  <h1
+                    class="text-white text-4xl lg:text-6xl font-black leading-tight tracking-tight font-display"
+                  >
+                    TikTok Video Downloader
+                  </h1>
+                  <p
+                    class="text-white/90 text-base lg:text-xl font-normal max-w-2xl mx-auto"
+                  >
+                    Download TikTok videos without watermark for free. Fast,
+                    easy, and unlimited. No software installation required.
+                  </p>
+                </div>
+                <!-- Search/Input Area -->
+                <div class="w-full max-w-[640px] z-10">
+                  <div id="input-section">
+                    <div
+                      class="flex flex-col md:flex-row w-full gap-3 p-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20"
+                    >
+                      <div
+                        class="flex flex-1 items-center bg-white rounded-xl px-4 py-3 shadow-inner"
+                      >
+                        <span class="material-symbols-outlined text-gray-400 mr-2"
+                          >link</span
+                        >
+                        <input
+                          id="tiktok-url-input"
+                          class="w-full bg-transparent border-none focus:ring-0 text-[#111418] text-base placeholder:text-gray-400"
+                          placeholder="Paste TikTok link here..."
+                          type="text"
+                        />
+                      </div>
+                      <button
+                        id="download-btn"
+                        class="flex min-w-[140px] items-center justify-center gap-2 rounded-xl bg-primary hover:bg-blue-600 text-white font-bold h-14 md:h-auto px-8 transition-all shadow-xl"
+                      >
+                        <span class="material-symbols-outlined">download</span>
+                        Download
+                      </button>
+                    </div>
+                    <p class="text-white/60 text-xs text-center mt-4">
+                      By using our service you accept our
+                      <a class="underline" href="#">Terms of Service</a>.
+                    </p>
+                  </div>
+                  <!-- Results will be inserted here -->
+                  <div id="results-placeholder" style="display: none;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- FeatureSection -->
+        <section
+          class="bg-background-light dark:bg-[#16212c] py-20 px-4 lg:px-40 flex justify-center"
+        >
+          <div class="max-w-[960px] w-full">
+            <div class="flex flex-col gap-12 @container">
+              <div class="flex flex-col gap-4 text-center md:text-left">
+                <h2
+                  class="text-[#111418] dark:text-white text-3xl lg:text-4xl font-black leading-tight tracking-tight font-display"
+                >
+                  Why Choose Our Downloader?
+                </h2>
+                <p
+                  class="text-[#617589] dark:text-gray-400 text-lg font-normal max-w-[720px]"
+                >
+                  We provide the fastest and most reliable way to save your
+                  favorite TikTok content in high quality.
+                </p>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div
+                  class="flex flex-col gap-4 rounded-xl border border-[#dbe0e6] dark:border-[#2a343f] bg-white dark:bg-background-dark p-8 hover:shadow-xl transition-shadow"
+                >
+                  <div
+                    class="w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary"
+                  >
+                    <span class="material-symbols-outlined text-3xl"
+                      >branding_watermark</span
+                    >
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <h3
+                      class="text-[#111418] dark:text-white text-xl font-bold"
+                    >
+                      No Watermark
+                    </h3>
+                    <p
+                      class="text-[#617589] dark:text-gray-400 text-sm font-normal leading-relaxed"
+                    >
+                      Get clean videos ready for reposting without any
+                      distracting platform branding or usernames.
+                    </p>
+                  </div>
+                </div>
+                <!-- Feature 2 -->
+                <div
+                  class="flex flex-col gap-4 rounded-xl border border-[#dbe0e6] dark:border-[#2a343f] bg-white dark:bg-background-dark p-8 hover:shadow-xl transition-shadow"
+                >
+                  <div
+                    class="w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary"
+                  >
+                    <span class="material-symbols-outlined text-3xl"
+                      >all_inclusive</span
+                    >
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <h3
+                      class="text-[#111418] dark:text-white text-xl font-bold"
+                    >
+                      Unlimited Downloads
+                    </h3>
+                    <p
+                      class="text-[#617589] dark:text-gray-400 text-sm font-normal leading-relaxed"
+                    >
+                      Save as many videos as you want. We have zero daily
+                      restrictions and no registration required.
+                    </p>
+                  </div>
+                </div>
+                <!-- Feature 3 -->
+                <div
+                  class="flex flex-col gap-4 rounded-xl border border-[#dbe0e6] dark:border-[#2a343f] bg-white dark:bg-background-dark p-8 hover:shadow-xl transition-shadow"
+                >
+                  <div
+                    class="w-12 h-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary"
+                  >
+                    <span class="material-symbols-outlined text-3xl">bolt</span>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <h3
+                      class="text-[#111418] dark:text-white text-xl font-bold"
+                    >
+                      Fast Speed
+                    </h3>
+                    <p
+                      class="text-[#617589] dark:text-gray-400 text-sm font-normal leading-relaxed"
+                    >
+                      Our high-speed global servers ensure your download starts
+                      instantly and finishes in seconds.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- SectionHeader & Timeline -->
+        <section
+          class="bg-white dark:bg-background-dark py-20 px-4 lg:px-40 flex justify-center"
+        >
+          <div class="max-w-[960px] w-full">
+            <h2
+              class="text-[#111418] dark:text-white text-3xl font-black leading-tight tracking-tight px-4 pb-10 text-center font-display"
+            >
+              How to download TikTok videos?
+            </h2>
+            <div
+              class="grid grid-cols-[56px_1fr] md:grid-cols-[64px_1fr] gap-x-4 px-4 max-w-2xl mx-auto"
+            >
+              <!-- Step 1 -->
+              <div class="flex flex-col items-center gap-2">
+                <div
+                  class="flex size-10 items-center justify-center rounded-full bg-primary text-white"
+                >
+                  <span class="material-symbols-outlined">link</span>
+                </div>
+                <div
+                  class="w-[2px] bg-[#dbe0e6] dark:bg-[#2a343f] h-12 grow"
+                ></div>
+              </div>
+              <div class="flex flex-col pb-8">
+                <p class="text-[#111418] dark:text-white text-lg font-bold">
+                  Copy Link
+                </p>
+                <p
+                  class="text-[#617589] dark:text-gray-400 text-base leading-relaxed"
+                >
+                  Open the TikTok app or website and copy the URL of the video
+                  you want to download.
+                </p>
+              </div>
+              <!-- Step 2 -->
+              <div class="flex flex-col items-center gap-2">
+                <div
+                  class="flex size-10 items-center justify-center rounded-full bg-primary text-white"
+                >
+                  <span class="material-symbols-outlined">content_paste</span>
+                </div>
+                <div
+                  class="w-[2px] bg-[#dbe0e6] dark:bg-[#2a343f] h-12 grow"
+                ></div>
+              </div>
+              <div class="flex flex-col pb-8">
+                <p class="text-[#111418] dark:text-white text-lg font-bold">
+                  Paste Link
+                </p>
+                <p
+                  class="text-[#617589] dark:text-gray-400 text-base leading-relaxed"
+                >
+                  Paste the link into the input field at the top of this page.
+                </p>
+              </div>
+              <!-- Step 3 -->
+              <div class="flex flex-col items-center gap-2">
+                <div
+                  class="flex size-10 items-center justify-center rounded-full bg-primary text-white"
+                >
+                  <span class="material-symbols-outlined">download_done</span>
+                </div>
+              </div>
+              <div class="flex flex-col pb-4">
+                <p class="text-[#111418] dark:text-white text-lg font-bold">
+                  Download &amp; Save
+                </p>
+                <p
+                  class="text-[#617589] dark:text-gray-400 text-base leading-relaxed"
+                >
+                  Click the "Download" button, choose your quality, and save the
+                  video to your device.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <!-- Footer -->
+      <footer
+        class="bg-background-light dark:bg-background-dark border-t border-[#dbe0e6] dark:border-[#2a343f] px-4 lg:px-40 py-12 flex justify-center"
+      >
+        <div class="max-w-[960px] w-full flex flex-col items-center gap-8">
+          <div class="flex flex-wrap justify-center gap-x-12 gap-y-4">
+            <a
+              class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary"
+              href="#"
+              >About Us</a
+            >
+            <a
+              class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary"
+              href="#"
+              >Privacy Policy</a
+            >
+            <a
+              class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary"
+              href="#"
+              >Terms of Service</a
+            >
+            <a
+              class="text-sm text-[#617589] dark:text-gray-400 hover:text-primary"
+              href="#"
+              >Blog</a
+            >
+          </div>
+          <div class="flex items-center gap-6">
+            <a
+              class="text-[#617589] dark:text-gray-400 hover:text-primary"
+              href="#"
+            >
+              <span class="material-symbols-outlined">language</span>
+            </a>
+            <a
+              class="text-[#617589] dark:text-gray-400 hover:text-primary"
+              href="#"
+            >
+              <span class="material-symbols-outlined">mail</span>
+            </a>
+          </div>
+          <p class="text-xs text-[#617589] dark:text-gray-500 text-center">
+            © 2024 TikTokDownloader. Not affiliated with TikTok or ByteDance
+            Ltd.
+          </p>
+        </div>
+      </footer>
+    </div>
+
+
+    <script src="script.js"></script>
+  </body>
+</html>
