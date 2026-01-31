@@ -98,10 +98,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files from the dist directory (where compiled files are located)
-// __dirname refers to the directory of the compiled file (dist/), so we serve from there
-app.use(express.static(path.join(__dirname)));
-
-// Also serve static files from the parent directory for other assets like index.html
+// During Vercel build, files will be placed appropriately
 app.use(express.static(path.join(__dirname, '..')));
 
 // Specifically serve the root index.html file

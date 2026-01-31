@@ -8,6 +8,14 @@
   ],
   "routes": [
     {
+      "src": "/output.css",
+      "dest": "/output.css"
+    },
+    {
+      "src": "/client.js",
+      "dest": "/client.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "src/index.ts"
     }
