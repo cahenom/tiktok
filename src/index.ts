@@ -97,8 +97,10 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from the dist directory (where compiled files are located)
-// During Vercel build, files will be placed appropriately
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+// Also serve other static files from the parent directory
 app.use(express.static(path.join(__dirname, '..')));
 
 // Specifically serve the root index.html file
