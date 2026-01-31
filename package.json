@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "concurrently \"ts-node src/index.ts\" \"tsc --watch --project tsconfig.client.json\"",
     "start": "node dist/index.js",
-    "build": "npm run build:server && npm run build:client && npm run build:css",
+    "build": "npm run build:server && npm run build:client && npm run build:css && npm run copy-static",
     "build:server": "tsc",
     "build:client": "tsc --project tsconfig.client.json",
     "build:css": "npx tailwindcss -i ./src/input.css -o ./dist/output.css",
+    "copy-static": "node copy-static.js",
     "vercel-build": "npm run build"
   },
   "dependencies": {
