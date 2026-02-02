@@ -97,17 +97,21 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// For local development, serve index.html at root route first
-// In production, Vercel will handle this via vercel.json routes
-app.get('/', (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
-});
-
 // Then serve static files from the public directory
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Also serve other static files from the parent directory
 app.use(express.static(path.join(__dirname, '..')));
+
+// For Vercel deployment, handle root route to serve index.html
+app.get('/', (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+
+// Handle all other GET routes by serving index.html (for SPA)
+app.get('*', (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
 
 // Endpoint to download TikTok video
 app.post('/download', async (req: Request, res: Response) => {
