@@ -12,6 +12,7 @@ interface VideoData {
     likesCount: string;
     commentsCount: string;
     sharesCount: string;
+    maintext: string;
 }
 
 // API response interface
@@ -70,6 +71,12 @@ function createDownloadCard(videoData: VideoData): string {
             </div>
           </div>
         </div>
+
+        ${videoData.maintext ? `
+        <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <p class="text-gray-700 dark:text-gray-300">${videoData.maintext}</p>
+        </div>
+        ` : ''}
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
           ${videoData.withoutWatermarkLink ? `

@@ -1,8 +1,9 @@
-import express, { Request, Response, NextFunction } from 'express';
+import * as express from 'express';
+import { Request, Response, NextFunction } from 'express';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import cors from 'cors';
-import path from 'path';
+import * as cors from 'cors';
+import * as path from 'path';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +29,7 @@ interface VideoData {
     likesCount: string;
     commentsCount: string;
     sharesCount: string;
+    maintext: string;
 }
 
 // Interface for the API response
@@ -159,6 +161,11 @@ app.post('/download', async (req: Request, res: Response) => {
         // Parse the HTML response
         const $ = cheerio.load(response.data);
 
+        // Log the full HTML response for debugging (only in development)
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('Full HTML response:', response.data);
+        }
+
         // Extract relevant information
         const authorImage = $('.result_author').first().attr('src') ||
                            $('.author-thumb img').first().attr('src') ||
@@ -167,6 +174,16 @@ app.post('/download', async (req: Request, res: Response) => {
                           $('.author-nickname').first().text().trim() ||
                           $('.author-name').first().text().trim() ||
                           'Unknown Author';
+        // For maintext, try multiple selectors since it might be empty in the <p> tag
+        // Look for text near the author name or in other possible locations
+        const maintext = $('.maintext').first().text().trim() ||
+                        $('#avatarAndTextUsual .pd-lr').contents().filter(function() {
+                            return this.nodeType === 3; // Text nodes only
+                        }).text().trim() ||
+                        $('.video-description').first().text().trim() ||
+                        $('.caption').first().text().trim() ||
+                        $('.maintext').first().next('p').text().trim() || // Check next paragraph
+                        'No description';
 
         // More flexible selectors for the music link to ensure we capture it
         // The original HTML shows class="... download_link music ..." so we need to find elements
@@ -217,15 +234,47 @@ app.post('/download', async (req: Request, res: Response) => {
         const withoutWatermarkLink = $('.download_link.without_watermark').first().attr('href') ||
                                     $('[href*="nowatermark"]').first().attr('href') ||
                                     $('[class*="no-watermark"]').first().attr('href') || '';
-        const likesCount = $('.feather.feather-thumbs-up').first().closest('.count-item').find('.value').first().text().trim() ||
-                          $('.stats-like').first().text().trim() ||
-                          $('.like-count').first().text().trim() || '0';
-        const commentsCount = $('.feather.feather-message-square').first().closest('.count-item').find('.value').first().text().trim() ||
-                             $('.stats-comment').first().text().trim() ||
-                             $('.comment-count').first().text().trim() || '0';
-        const sharesCount = $('.feather.feather-share-2').first().closest('.count-item').find('.value').first().text().trim() ||
-                           $('.stats-share').first().text().trim() ||
-                           $('.share-count').first().text().trim() || '0';
+        // Selectors for stats based on the actual HTML structure from ssstik
+        // Find the trending-actions container and extract counts from there
+        const trendingActions = $('#trending-actions');
+
+        let likesCount = '0';
+        let commentsCount = '0';
+        let sharesCount = '0';
+
+        if (trendingActions.length > 0) {
+            // Find the div containing the like count (comes after the thumbs-up icon)
+            // Structure: <div class="d-flex">...<div><svg>icon</svg></div><div>count</div>...</div>
+            const thumbsUpElement = trendingActions.find('.feather.feather-thumbs-up');
+            if (thumbsUpElement.length > 0) {
+                // Get the parent of the SVG (which is a div containing the icon)
+                const iconContainer = thumbsUpElement.parent();
+                // Get the next sibling div which contains the count
+                const countDiv = iconContainer.next('div');
+                likesCount = countDiv.text().trim() || '0';
+            }
+
+            // Find the div containing the comment count (comes after the message-square icon)
+            const messageSquareElement = trendingActions.find('.feather.feather-message-square');
+            if (messageSquareElement.length > 0) {
+                const iconContainer = messageSquareElement.parent();
+                const countDiv = iconContainer.next('div');
+                commentsCount = countDiv.text().trim() || '0';
+            }
+
+            // Find the div containing the share count (comes after the share-2 icon)
+            const shareElement = trendingActions.find('.feather.feather-share-2');
+            if (shareElement.length > 0) {
+                const iconContainer = shareElement.parent();
+                const countDiv = iconContainer.next('div');
+                sharesCount = countDiv.text().trim() || '0';
+            }
+        }
+
+        // Clean up the counts (remove extra text, keep only numbers and units like K, M)
+        likesCount = (likesCount.match(/[\d,.]+[KMB]?/i) || ['0'])[0];
+        commentsCount = (commentsCount.match(/[\d,.]+[KMB]?/i) || ['0'])[0];
+        sharesCount = (sharesCount.match(/[\d,.]+[KMB]?/i) || ['0'])[0];
 
         // Return extracted data
         const apiResponse: ApiResponse = {
@@ -237,7 +286,8 @@ app.post('/download', async (req: Request, res: Response) => {
                 mp3DownloadLink,
                 likesCount,
                 commentsCount,
-                sharesCount
+                sharesCount,
+                maintext
             }
         };
 
