@@ -1,9 +1,9 @@
-import * as express from 'express';
+import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import * as cors from 'cors';
-import * as path from 'path';
+import cors from 'cors';
+import path from 'path';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -78,26 +78,8 @@ const checkOrigin = (req: Request, res: Response, next: NextFunction) => {
 // Apply security middleware
 app.use(checkOrigin);
 
-// Define CORS options separately to avoid inline function issues
-const corsOptions: cors.CorsOptions = {
-    origin: function(origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) {
-            callback(null, true);
-            return;
-        }
-        if (ALLOWED_ORIGINS.indexOf(origin) !== -1) {
-            callback(null, true);
-            return;
-        } else {
-            console.log(`CORS blocked request from origin: ${origin}`);
-            callback(null, true); // Allow all origins in production for this service
-        }
-    }
-};
-
 // Middleware
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
