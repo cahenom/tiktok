@@ -41,12 +41,11 @@ var CONFIG = {
 // Function to download TikTok video
 function downloadTikTokVideo(url) {
     return __awaiter(this, void 0, void 0, function () {
-        var response, responseBody, data, error_1;
+        var response, data, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    console.log('Sending request to:', CONFIG.API_ENDPOINT, 'with URL:', url);
                     return [4 /*yield*/, fetch(CONFIG.API_ENDPOINT, {
                             method: 'POST',
                             headers: {
@@ -56,22 +55,12 @@ function downloadTikTokVideo(url) {
                         })];
                 case 1:
                     response = _a.sent();
-                    console.log('Response status:', response.status);
-                    return [4 /*yield*/, response.text()];
-                case 2:
-                    responseBody = _a.sent();
-                    console.log('Response body:', responseBody);
                     if (!response.ok) {
-                        throw new Error("HTTP error! status: ".concat(response.status, ", body: ").concat(responseBody));
+                        throw new Error("HTTP error! status: ".concat(response.status));
                     }
-                    data = void 0;
-                    try {
-                        data = JSON.parse(responseBody);
-                    }
-                    catch (parseError) {
-                        console.error('Error parsing response JSON:', parseError);
-                        throw new Error('Invalid response format from server');
-                    }
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    data = _a.sent();
                     if (data.success && data.data) {
                         // Return the extracted data received from the server
                         return [2 /*return*/, data.data];
