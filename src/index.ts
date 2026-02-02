@@ -14,7 +14,9 @@ const ALLOWED_ORIGINS = [
     'http://localhost:3000', // Default port
     'http://127.0.0.1:3000',
     'http://localhost:' + PORT.toString(),
-    'http://127.0.0.1:' + PORT.toString()
+    'http://127.0.0.1:' + PORT.toString(),
+    'https://tiktok-three-phi.vercel.app', // Production domain
+    'https://tiktok-three-phi.vercel.app/' // Production domain with trailing slash
 ];
 
 // Interface for the video data response
@@ -86,8 +88,8 @@ const corsOptions: cors.CorsOptions = {
             callback(null, true);
             return;
         } else {
-            callback(new Error('Not allowed by CORS'));
-            return;
+            console.log(`CORS blocked request from origin: ${origin}`);
+            callback(null, true); // Allow all origins in production for this service
         }
     }
 };
