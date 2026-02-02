@@ -23,12 +23,13 @@ interface ApiResponse {
 
 // Configuration
 const CONFIG: Config = {
-    API_ENDPOINT: '/download'  // The API endpoint remains the same since it's handled by the same server
+    API_ENDPOINT: '/download'  // Using relative path to work both locally and in deployment
 };
 
 // Function to download TikTok video
 async function downloadTikTokVideo(url: string): Promise<VideoData> {
     try {
+        console.log('Sending request to:', CONFIG.API_ENDPOINT, 'with URL:', url);
         const response = await fetch(CONFIG.API_ENDPOINT, {
             method: 'POST',
             headers: {
@@ -37,11 +38,21 @@ async function downloadTikTokVideo(url: string): Promise<VideoData> {
             body: JSON.stringify({ url })
         });
 
+        console.log('Response status:', response.status);
+        const responseBody = await response.text();
+        console.log('Response body:', responseBody);
+
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status}, body: ${responseBody}`);
         }
 
-        const data: ApiResponse = await response.json();
+        let data: ApiResponse;
+        try {
+            data = JSON.parse(responseBody);
+        } catch (parseError) {
+            console.error('Error parsing response JSON:', parseError);
+            throw new Error('Invalid response format from server');
+        }
 
         if (data.success && data.data) {
             // Return the extracted data received from the server

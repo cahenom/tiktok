@@ -154,20 +154,24 @@ app.post('/download', async (req: Request, res: Response) => {
             timeout: 15000 // 15 second timeout
         });
 
-        // Log the response for debugging (first 1000 chars)
-        console.log('Response preview:', response.data.substring(0, 1000));
-
         // Parse the HTML response
         const $ = cheerio.load(response.data);
 
         // Extract relevant information
-        const authorImage = $('.result_author').attr('src') ?? '';
-        const authorName = $('h2').first().text().trim() || 'Unknown Author';
+        const authorImage = $('.result_author').first().attr('src') ||
+                           $('.author-thumb img').first().attr('src') ||
+                           $('.avatar img').first().attr('src') || '';
+        const authorName = $('h2').first().text().trim() ||
+                          $('.author-nickname').first().text().trim() ||
+                          $('.author-name').first().text().trim() ||
+                          'Unknown Author';
 
         // More flexible selectors for the music link to ensure we capture it
         // The original HTML shows class="... download_link music ..." so we need to find elements
         // that have both "download_link" and "music" in their class attribute
-        let mp3DownloadLink = $('[class*="download_link"][class*="music"]').attr('href') ?? '';
+        let mp3DownloadLink = $('[class*="download_link"][class*="music"]').first().attr('href') ||
+                             $('[class*="music_download"]').first().attr('href') ||
+                             $('[href*="music"]').first().attr('href') || '';
 
         // If the combined class selector didn't work, try finding by text content
         if (!mp3DownloadLink) {
@@ -179,7 +183,7 @@ app.post('/download', async (req: Request, res: Response) => {
                 // Look for links with "download" and "mp3"/"music"/"audio" in text, and "download_link" in class
                 if ((text.includes('download') && (text.includes('mp3') || text.includes('music') || text.includes('audio')))
                     && classes.includes('download_link')) {
-                    mp3DownloadLink = href ?? '';
+                    mp3DownloadLink = href || '';
                     return false; // break the loop
                 }
             });
@@ -188,26 +192,38 @@ app.post('/download', async (req: Request, res: Response) => {
         // If still not found, try finding by the specific text "Download MP3"
         if (!mp3DownloadLink) {
             const mp3Link = $('#dl_btns a').filter((i, el) => {
-                return $(el).text().trim() === 'Download MP3';
+                return $(el).text().trim() === 'Download MP3' || $(el).text().trim().includes('MP3');
             }).first();
 
             if (mp3Link.length > 0) {
-                mp3DownloadLink = mp3Link.attr('href') ?? '';
+                mp3DownloadLink = mp3Link.attr('href') || '';
                 console.log('Found music link by text "Download MP3":', mp3DownloadLink);
             }
         }
 
-        // Log for debugging
-        console.log('Selectors tried for music link:');
-        console.log('- [class*="download_link"][class*="music"]:', ($('[class*="download_link"][class*="music"]').attr('href') ?? '') || 'NOT FOUND');
-        console.log('- Text search "Download MP3":', ($('#dl_btns a').filter((i, el) =>
-            $(el).text().trim() === 'Download MP3').attr('href') ?? '') || 'NOT FOUND');
-        console.log('Final MP3 link:', mp3DownloadLink || 'NOT FOUND');
+        // Log for debugging (only in development)
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('Selectors tried for music link:');
+            console.log('- [class*="download_link"][class*="music"]:', $('[class*="download_link"][class*="music"]').first().attr('href') || 'NOT FOUND');
+            console.log('- [class*="music_download"]:', $('[class*="music_download"]').first().attr('href') || 'NOT FOUND');
+            console.log('- [href*="music"]:', $('[href*="music"]').first().attr('href') || 'NOT FOUND');
+            console.log('- Text search "Download MP3":', $('#dl_btns a').filter((i, el) =>
+                $(el).text().trim() === 'Download MP3').first().attr('href') || 'NOT FOUND');
+            console.log('Final MP3 link:', mp3DownloadLink || 'NOT FOUND');
+        }
 
-        const withoutWatermarkLink = $('.download_link.without_watermark').attr('href') ?? '';
-        const likesCount = $('.feather.feather-thumbs-up').parent().next().text().trim() || '0';
-        const commentsCount = $('.feather.feather-message-square').parent().next().text().trim() || '0';
-        const sharesCount = $('.feather.feather-share-2').parent().next().text().trim() || '0';
+        const withoutWatermarkLink = $('.download_link.without_watermark').first().attr('href') ||
+                                    $('[href*="nowatermark"]').first().attr('href') ||
+                                    $('[class*="no-watermark"]').first().attr('href') || '';
+        const likesCount = $('.feather.feather-thumbs-up').first().closest('.count-item').find('.value').first().text().trim() ||
+                          $('.stats-like').first().text().trim() ||
+                          $('.like-count').first().text().trim() || '0';
+        const commentsCount = $('.feather.feather-message-square').first().closest('.count-item').find('.value').first().text().trim() ||
+                             $('.stats-comment').first().text().trim() ||
+                             $('.comment-count').first().text().trim() || '0';
+        const sharesCount = $('.feather.feather-share-2').first().closest('.count-item').find('.value').first().text().trim() ||
+                           $('.stats-share').first().text().trim() ||
+                           $('.share-count').first().text().trim() || '0';
 
         // Return extracted data
         const apiResponse: ApiResponse = {
@@ -227,7 +243,7 @@ app.post('/download', async (req: Request, res: Response) => {
         return; // Explicitly return to satisfy TypeScript
 
     } catch (error: any) {
-        console.error('Error downloading TikTok video:', error.message);
+        console.error('Error downloading TikTok video:', error);
 
         // Check if it's a timeout error
         if (error.code === 'ECONNABORTED') {
@@ -247,7 +263,7 @@ app.post('/download', async (req: Request, res: Response) => {
             return; // Explicitly return to satisfy TypeScript
         } else {
             // Something else happened
-            res.status(500).json({ error: 'Failed to download the video' });
+            res.status(500).json({ error: error.message || 'Failed to download the video' });
             return; // Explicitly return to satisfy TypeScript
         }
     }
