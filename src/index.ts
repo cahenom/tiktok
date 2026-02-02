@@ -97,7 +97,13 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from the public directory
+// For local development, serve index.html at root route first
+// In production, Vercel will handle this via vercel.json routes
+app.get('/', (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+
+// Then serve static files from the public directory
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Also serve other static files from the parent directory
